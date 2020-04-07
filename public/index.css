@@ -1,0 +1,37 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: black;
+  color: white;
+}
+#root {
+  font-family: "Montserrat", sans-serif;
+  /* font-family: Arial; */
+  /* background-color: #666; */
+}
+
+header {
+  position: relative;
+  background-color: #343a40;
+  background-size: cover;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+.jumbotron {
+  text-align: center;
+  background: url("banner.jpg") no-repeat center center;
+  position: relative;
+}
+
+.poem-title {
+  font-weight: bold;
+}
+
+.poem-card {
+  /* background-color: #666; */
+  width: 20em;
+}
+
+.add-poem {
+  bottom: 10px;
+}
