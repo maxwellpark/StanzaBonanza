@@ -1,3 +1,13 @@
+# Stanza Bonanza 
+
+Unlike other poetry sites, Stanza Bonanza encourages open collaboration between poets. Users can create a new poem, write a stanza or two, and then wait for other users to extend that poem, adding their own personal spin and enriching the piece in the process. Before long, a diverse tapestry comes to life! 
+
+Poems on Stanza Bonanza are more than the sum of their parts! 
+
+If poets desire more control over their work, they can specify certain constraints.
+
+___
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
