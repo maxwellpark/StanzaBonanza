@@ -10,7 +10,7 @@ import App from "./components/App";
 let store = createStore(poemReducer);
 
 store.subscribe(() => {
-  console.log("updated!");
+  console.log("redux store updated!");
   console.log(store.getState());
 });
 

@@ -1,5 +1,6 @@
+// Container for Poem components
+
 import React from "react";
-// import { bindActionCreators } from "redux";
 import { useSelector, connect } from "react-redux";
 import Poem from "./Poem";
 import AddPoem from "./AddPoem";
@@ -10,19 +11,15 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Poems = ({ collection }) => {
-  const poems = useSelector((state) => state.poems);
-
-  console.log("selector poems: ", poems);
-  console.log("poems per page: ", poems.poemsPerPage);
+  const state = useSelector((state) => state);
+  const poems = collection == "main" ? state.poems : state.hallOfFamers;
+  const poemsPerPage = state.poemsPerPage;
   const poemCount = poems.length;
-  console.log("poem count: ", poemCount);
+
   const [currentPage, setCurrentPage] = useState(1);
 
-  let poemsPerPage = 5;
   // See utils for implementation details
   const paginatedPoems = paginatePoems(poems, currentPage, poemsPerPage);
-  console.log("paginatedPoems type: ", typeof paginatedPoems);
-  console.log("paginated poems: ", poems);
 
   const handlePageChange = (page) => {
     console.log("page no. :", page);
@@ -31,7 +28,7 @@ const Poems = ({ collection }) => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="poem-container">
       <Row className="justify-content-md-center">
         <Col>{collection == "main" ? <AddPoem /> : null}</Col>
         <Col>

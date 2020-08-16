@@ -26,6 +26,7 @@ const AddPoem = (props) => {
           );
         }}
       >
+        {/* Looking to replace with ReactQuill in the future */}
         <input
           type="text"
           value={title}

@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Pagination = (props) => {
   const pageCount = Math.ceil(props.poemCount / props.poemsPerPage);
-  console.log("page count: ", pageCount);
   const pages = _.range(1, pageCount + 1);
 
   if (pageCount === 1) return null;

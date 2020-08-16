@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import ReactQuill from "react-quill";
 import Like from "./Like";
 import { Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,7 +17,7 @@ const Poem = (props) => {
       <p>{props.text}</p>
       <p>Created: {props.date}</p>
       <Like liked={liked} handleLike={handleLike} />
-      <button>Extend</button>
+      <button className="extend-btn">Extend</button>
     </Col>
   );
 };

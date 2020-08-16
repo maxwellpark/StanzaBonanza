@@ -21,19 +21,26 @@ header {
 
 .jumbotron {
   text-align: center;
-  background: url("banner.jpg") no-repeat center center;
+  background-image: url("banner.jpg") no-repeat center center;
   position: relative;
 }
 
 .poem-title {
   text-align: center;
   font-weight: bold;
+  padding-top: 20px;
+}
+
+.poem-author {
+  text-align: center;
+  padding-bottom: 10px;
 }
 
 .poem-card {
   /* background-color: #666; */
   width: 20em;
   border: 2px solid #f4f800;
+  margin-bottom: 20px;
 
   /* Remember to colour code this
   based on genre or literary device value.
@@ -44,4 +51,8 @@ header {
 
 .add-poem {
   bottom: 10px;
+}
+
+.extend-btn {
+  margin-bottom: 10px;
 }
