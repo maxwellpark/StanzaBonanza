@@ -9,6 +9,8 @@ body {
   /* background-color: #666; */
 }
 
+/* Component styling:  
+Should break these out at some point */
 header {
   position: relative;
   background-color: #343a40;
@@ -24,12 +26,20 @@ header {
 }
 
 .poem-title {
+  text-align: center;
   font-weight: bold;
 }
 
 .poem-card {
   /* background-color: #666; */
   width: 20em;
+  border: 2px solid #f4f800;
+
+  /* Remember to colour code this
+  based on genre or literary device value.
+  Alternatively let the user specifiy a 
+  colour that reflects the mood */
+  box-shadow: 10px 10px 5px #f4f800;
 }
 
 .add-poem {

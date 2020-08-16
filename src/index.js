@@ -4,9 +4,10 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { addDummyPoem } from "./actions/poemActions";
 import rootReducer from "./reducers/rootReducer";
+import poemReducer from "./reducers/poemReducer";
 import App from "./components/App";
 
-let store = createStore(rootReducer);
+let store = createStore(poemReducer);
 
 store.subscribe(() => {
   console.log("updated!");

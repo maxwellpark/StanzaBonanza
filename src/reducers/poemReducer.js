@@ -2,16 +2,21 @@ import Moment from "moment";
 
 const initialState = {
   poemsPerPage: 5,
+
+  // Pre-composed poems
   poems: [
     {
       id: 0,
       author: "Benevolent Pricktator",
       title: "The Semblance of Liberty",
+
+      // Backticks allow multi-line string,
+      // which allows poem lines to be represented
       text: `Come, queue up to kiss my feet
-        And hear the starlings forced to tweet
-        All shall blossom under my reign
+        And hear the starlings forced to tweet.
+        All shall blossom under my reign.
         Even the heretics will feel no pain.`,
-      date: "06-09-1969"
+      date: "06-09-1969",
     },
     {
       id: 1,
@@ -24,7 +29,7 @@ const initialState = {
         When will the pressure rise?
         Sufficiently to lift my disguise
         This is far too much torment for a boundary to endure.`,
-      date: "28-11-2018"
+      date: "28-11-2018",
     },
     {
       id: 2,
@@ -33,7 +38,7 @@ const initialState = {
       text: `Deafened by the quotidian vortex
         Orientation less than impossible
         No notion of a posterior appendage whatsoever.`,
-      date: "05-01-2019"
+      date: "05-01-2019",
     },
     {
       id: 3,
@@ -43,9 +48,10 @@ const initialState = {
         Groped by the system.
         Congenital heartbreak and an ash tray
         Were the only respite in sight.`,
-      date: "16-03-1999"
-    }
+      date: "16-03-1999",
+    },
   ],
+  // These cannot be extended by other poets
   hallOfFamers: [
     {
       id: 0,
@@ -56,7 +62,7 @@ const initialState = {
         I'd be less insulted,
         If she wasn't so damn bloated. 
         `,
-      date: "09-05-2003"
+      date: "09-05-2003",
     },
     {
       id: 1,
@@ -66,9 +72,18 @@ const initialState = {
       Invalidating their claims to freedom.
       Now less significant than the pitter patter,
       Of a tepid deluge.`,
-      date: "18-12-2010"
-    }
-  ]
+      date: "18-12-2010",
+    },
+  ],
+  extensions: [
+    {
+      // Id corresponds to a poem id
+      id: 3,
+      newStanza: true,
+      text: "Witnesses weren't even contrite...",
+      literaryDevice: "emphasis",
+    },
+  ],
 };
 
 const poemReducer = (state = initialState, action) => {
@@ -80,19 +95,19 @@ const poemReducer = (state = initialState, action) => {
     case "EXTEND_POEM":
       return {
         ...state,
-        poems: [...state.poems, action.poem]
+        extensions: [action.extensions, ...state.extensions],
       };
 
     case "DELETE_POEM":
       return {
         ...state,
-        poems: [...state.poems, (action.poem = null)]
+        poems: [...state.poems, (action.poem = null)],
       };
 
     case "ADD_DUMMY_POEM":
       return {
         ...state,
-        poems: [...state.poems, action.poem]
+        poems: [...state.poems, action.poem],
       };
 
     default:

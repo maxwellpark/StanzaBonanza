@@ -2,7 +2,7 @@ import React, { useLayoutEffect } from "react";
 import _ from "lodash";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Pagination = props => {
+const Pagination = (props) => {
   const pageCount = Math.ceil(props.poemCount / props.poemsPerPage);
   console.log("page count: ", pageCount);
   const pages = _.range(1, pageCount + 1);
@@ -12,7 +12,7 @@ const Pagination = props => {
   return (
     <nav>
       <ul className="pagination">
-        {pages.map(page => {
+        {pages.map((page) => {
           return (
             <li
               key={page}

@@ -15,6 +15,10 @@ export const extendPoemAction = {
   poem: {
     coauthor: "Nelson Lurgy",
     text: `Take that to the bank, You ungrateful tosser.`,
+
+    // Will use this to colour code the extension
+    // based on the literary device it provides
+    literaryDevice: "emphasis",
   },
 };
 
@@ -22,6 +26,8 @@ export const deletePoemAction = {
   type: "DELETE_POEM",
 };
 
+// Used to test page-filling dynamic
+// and pagination
 export const addDummyPoem = {
   type: "ADD_DUMMY_POEM",
   poem: {
