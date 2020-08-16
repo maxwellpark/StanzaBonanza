@@ -4,7 +4,7 @@ import Like from "./Like";
 import { Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Poem = props => {
+const Poem = (props) => {
   const [liked, setLiked] = useState(false);
 
   const handleLike = () => {

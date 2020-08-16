@@ -5,8 +5,8 @@ export const addPoemAction = (author, title, text, date) => {
       author: author,
       title: title,
       text: text,
-      date: date
-    }
+      date: date,
+    },
   };
 };
 
@@ -14,12 +14,12 @@ export const extendPoemAction = {
   type: "EXTEND_POEM",
   poem: {
     coauthor: "Nelson Lurgy",
-    text: `Take that to the bank, You ungrateful tosser.`
-  }
+    text: `Take that to the bank, You ungrateful tosser.`,
+  },
 };
 
 export const deletePoemAction = {
-  type: "DELETE_POEM"
+  type: "DELETE_POEM",
 };
 
 export const addDummyPoem = {
@@ -27,6 +27,6 @@ export const addDummyPoem = {
   poem: {
     author: "Lorem Ipsum",
     title: "Lorem Ipusm",
-    text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed libero non sem accumsan iaculis. Mauris feugiat sem vel velit auctor, vel porta ex vulputate. Cras ac est id diam porttitor aliquam. Vestibulum accumsan cursus interdum. Pellentesque elit est, commodo.`
-  }
+    text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed libero non sem accumsan iaculis. Mauris feugiat sem vel velit auctor, vel porta ex vulputate. Cras ac est id diam porttitor aliquam. Vestibulum accumsan cursus interdum. Pellentesque elit est, commodo.`,
+  },
 };

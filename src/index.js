@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { addDummyPoem } from "./actions/poemActions";
-import poemReducer from "./reducers/poemReducer";
+import rootReducer from "./reducers/rootReducer";
 import App from "./components/App";
 
-let store = createStore(poemReducer);
+let store = createStore(rootReducer);
 
 store.subscribe(() => {
   console.log("updated!");
@@ -23,5 +23,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App />,
   </Provider>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );

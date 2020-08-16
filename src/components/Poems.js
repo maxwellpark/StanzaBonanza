@@ -9,8 +9,7 @@ import { useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Poems = props => {
-  // console.log("poems state: ", props.poems);
+const Poems = (props) => {
   console.log("poems per page: ", props.poemsPerPage);
   const poemCount = props.poems.length;
   console.log("poem count: ", poemCount);
@@ -19,7 +18,7 @@ const Poems = props => {
   const poems = paginatePoems(props.poems, currentPage, props.poemsPerPage);
   console.log("paginated poems: ", poems);
 
-  const handlePageChange = page => {
+  const handlePageChange = (page) => {
     console.log("page no. :", page);
     setCurrentPage(page);
     console.log("current page: ", currentPage);
@@ -39,7 +38,7 @@ const Poems = props => {
         </Col>
       </Row>
       <Row>
-        {poems.map(poem => {
+        {poems.map((poem) => {
           return (
             <Col md="auto">
               <Card key={poem.id} className="poem-card">
@@ -63,12 +62,12 @@ const mapStateToProps = (state, ownProps) => {
     case "main":
       return {
         poems: state.poems,
-        poemsPerPage: state.poemsPerPage
+        poemsPerPage: state.poemsPerPage,
       };
     case "hallOfFame":
       return {
         poems: state.hallOfFamers,
-        poemsPerPage: state.poemsPerPage
+        poemsPerPage: state.poemsPerPage,
       };
     default:
       return null;

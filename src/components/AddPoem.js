@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Card } from "react-bootstrap";
 import moment from "moment";
 
-const AddPoem = props => {
+const AddPoem = (props) => {
   let author, title, text;
   const dispatch = useDispatch();
 
@@ -12,24 +12,24 @@ const AddPoem = props => {
     <Card className="add-poem">
       <textarea
         form="poem_form"
-        onChange={e => (text = e.target.value)}
+        onChange={(e) => (text = e.target.value)}
         value={text}
         placeholder="Create a poem!"
       />
       <form
         id="poem_form"
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           console.log("Text: ", text);
           dispatch(
-            addPoemAction(author, title, text, moment().format("DD-MM-YYYY"))
+            addPoemAction(author, title, text, moment().format("DD-MM-YYYY")),
           );
         }}
       >
         <input
           type="text"
           value={title}
-          onChange={e => (title = e.target.value)}
+          onChange={(e) => (title = e.target.value)}
           name="title"
           placeholder="Title"
           required
@@ -37,7 +37,7 @@ const AddPoem = props => {
         <input
           type="text"
           value={author}
-          onChange={e => (author = e.target.value)}
+          onChange={(e) => (author = e.target.value)}
           name="author"
           placeholder="Your name"
           required

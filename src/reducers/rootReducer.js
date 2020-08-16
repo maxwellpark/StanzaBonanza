@@ -1,8 +1,8 @@
-// import { combineReducers } from "redux";
-// import poemReducer from "./poemReducer";
+import { combineReducers } from "redux";
+import poemReducer from "./poemReducer";
 
-// const rootReducer = combineReducers({
-//   poemReducer
-// });
+const rootReducer = combineReducers({
+  poemReducer,
+});
 
-// export default rootReducer;
+export default rootReducer;
