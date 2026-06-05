@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #f5f0e8;
+  --color-parchment-dark: #e8e0d0;
+  --color-ink: #1a1a2e;
+  --color-ink-light: #2d2d44;
+  --color-quill-gold: #c9a84c;
+  --color-quill-gold-light: #e0c878;
+  --color-feather: #7c6f5b;
+  --color-accent: #4a6fa5;
+  --color-accent-light: #6b8fc5;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-error: #f44336;
+
+  --font-serif: "Playfair Display", "Georgia", serif;
+  --font-body: "Source Serif 4", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white px-6 py-2 rounded-lg font-sans font-medium
+           hover:bg-accent-light transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border border-ink text-ink px-6 py-2 rounded-lg font-sans font-medium
+           hover:bg-ink hover:text-parchment transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-parchment-dark p-6;
+  }
+
+  .poem-text {
+    @apply whitespace-pre-line leading-relaxed text-lg;
+    font-family: var(--font-body);
+  }
+}

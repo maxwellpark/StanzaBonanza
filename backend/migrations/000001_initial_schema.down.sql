@@ -1,0 +1,20 @@
+BEGIN;
+
+DROP TABLE IF EXISTS user_tiers;
+DROP TABLE IF EXISTS tutorials;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS follows;
+DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS stanzas;
+DROP TABLE IF EXISTS poems;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS magic_links;
+DROP TABLE IF EXISTS webauthn_credentials;
+DROP TABLE IF EXISTS users;
+
+DROP TYPE IF EXISTS notification_type;
+DROP TYPE IF EXISTS approval_mode;
+DROP TYPE IF EXISTS poem_format;
+
+COMMIT;
