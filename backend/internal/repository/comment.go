@@ -59,7 +59,7 @@ func (r *CommentRepository) ListByPoem(ctx context.Context, poemID uuid.UUID, pa
 	}
 	defer rows.Close()
 
-	var comments []domain.Comment
+	comments := make([]domain.Comment, 0)
 	for rows.Next() {
 		var c domain.Comment
 		var author domain.User

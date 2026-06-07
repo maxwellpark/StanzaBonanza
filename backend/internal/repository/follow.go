@@ -70,7 +70,7 @@ func (r *FollowRepository) ListFollowers(ctx context.Context, userID uuid.UUID, 
 	}
 	defer rows.Close()
 
-	var users []domain.User
+	users := make([]domain.User, 0)
 	for rows.Next() {
 		var u domain.User
 		if err := rows.Scan(&u.ID, &u.DisplayName, &u.Email, &u.Bio, &u.AvatarURL, &u.IsVerified, &u.CreatedAt, &u.UpdatedAt); err != nil {
@@ -105,7 +105,7 @@ func (r *FollowRepository) ListFollowing(ctx context.Context, userID uuid.UUID, 
 	}
 	defer rows.Close()
 
-	var users []domain.User
+	users := make([]domain.User, 0)
 	for rows.Next() {
 		var u domain.User
 		if err := rows.Scan(&u.ID, &u.DisplayName, &u.Email, &u.Bio, &u.AvatarURL, &u.IsVerified, &u.CreatedAt, &u.UpdatedAt); err != nil {

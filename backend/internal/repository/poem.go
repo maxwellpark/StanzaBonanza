@@ -63,7 +63,7 @@ func scanPoem(row pgx.Row) (*domain.Poem, error) {
 }
 
 func scanPoems(rows pgx.Rows) ([]domain.Poem, error) {
-	var poems []domain.Poem
+	poems := make([]domain.Poem, 0)
 	for rows.Next() {
 		var p domain.Poem
 		var author domain.User

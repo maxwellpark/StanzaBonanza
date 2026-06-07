@@ -25,7 +25,7 @@ func (r *TutorialRepository) List(ctx context.Context) ([]domain.Tutorial, error
 	}
 	defer rows.Close()
 
-	var tutorials []domain.Tutorial
+	tutorials := make([]domain.Tutorial, 0)
 	for rows.Next() {
 		var t domain.Tutorial
 		if err := rows.Scan(&t.ID, &t.Title, &t.Slug, &t.Format, &t.ContentMD, &t.Difficulty, &t.DisplayOrder, &t.CreatedAt); err != nil {

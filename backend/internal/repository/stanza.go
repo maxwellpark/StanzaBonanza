@@ -44,7 +44,7 @@ func (r *StanzaRepository) ListByPoem(ctx context.Context, poemID uuid.UUID) ([]
 	}
 	defer rows.Close()
 
-	var stanzas []domain.Stanza
+	stanzas := make([]domain.Stanza, 0)
 	for rows.Next() {
 		var s domain.Stanza
 		var author domain.User
