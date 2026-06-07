@@ -85,16 +85,19 @@ func (s *Server) setupRoutes() {
 	authMiddleware := middleware.Auth(authSvc)
 	optionalAuth := middleware.OptionalAuth(authSvc)
 
+	// 3 req/s burst 5 - tight limit for endpoints that send email or initiate auth ceremonies.
+	strictRL := middleware.NewRateLimiter(rate.Limit(3), 5)
+
 	s.router.Get("/health", handler.Health(s.db))
 
 	s.router.Route("/api/v1", func(r chi.Router) {
 		// Auth (public)
 		r.Route("/auth", func(r chi.Router) {
-			r.Post("/magic-link", authHandler.RequestMagicLink)
+			r.With(strictRL.Middleware).Post("/magic-link", authHandler.RequestMagicLink)
 			r.Get("/magic-link/verify", authHandler.VerifyMagicLink)
 			r.With(authMiddleware).Post("/register/begin", authHandler.BeginRegistration)
 			r.With(authMiddleware).Post("/register/finish", authHandler.FinishRegistration)
-			r.Post("/login/begin", authHandler.BeginLogin)
+			r.With(strictRL.Middleware).Post("/login/begin", authHandler.BeginLogin)
 			r.Post("/login/finish", authHandler.FinishLogin)
 			r.With(authMiddleware).Post("/logout", authHandler.Logout)
 			r.With(authMiddleware).Get("/me", authHandler.Me)
