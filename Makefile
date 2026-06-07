@@ -1,5 +1,8 @@
 .PHONY: dev dev-backend dev-frontend dev-infra build test test-backend test-frontend migrate migrate-down lint
 
+-include .env
+export
+
 # all 
 dev: dev-infra dev-backend dev-frontend
 
