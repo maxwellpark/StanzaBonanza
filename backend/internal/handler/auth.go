@@ -69,19 +69,109 @@ func (h *AuthHandler) VerifyMagicLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) BeginRegistration(w http.ResponseWriter, r *http.Request) {
-	respondError(w, http.StatusNotImplemented, "WebAuthn registration not yet implemented")
+	userID, ok := middleware.UserIDFromContext(r.Context())
+	if !ok {
+		respondError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	creation, sessionKey, err := h.svc.BeginRegistration(r.Context(), userID)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "failed to begin registration")
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "wa_session",
+		Value:    sessionKey,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   300,
+	})
+
+	respondJSON(w, http.StatusOK, creation)
 }
 
 func (h *AuthHandler) FinishRegistration(w http.ResponseWriter, r *http.Request) {
-	respondError(w, http.StatusNotImplemented, "WebAuthn registration not yet implemented")
+	userID, ok := middleware.UserIDFromContext(r.Context())
+	if !ok {
+		respondError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	cookie, err := r.Cookie("wa_session")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, "missing WebAuthn session")
+		return
+	}
+
+	if _, err := h.svc.FinishRegistration(r.Context(), userID, cookie.Value, r); err != nil {
+		respondError(w, http.StatusBadRequest, "registration failed: "+err.Error())
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:   "wa_session",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	})
+
+	respondJSON(w, http.StatusOK, map[string]string{"message": "passkey registered"})
 }
 
 func (h *AuthHandler) BeginLogin(w http.ResponseWriter, r *http.Request) {
-	respondError(w, http.StatusNotImplemented, "WebAuthn login not yet implemented")
+	assertion, sessionKey, err := h.svc.BeginLogin(r.Context())
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "failed to begin login")
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "wa_session",
+		Value:    sessionKey,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   300,
+	})
+
+	respondJSON(w, http.StatusOK, assertion)
 }
 
 func (h *AuthHandler) FinishLogin(w http.ResponseWriter, r *http.Request) {
-	respondError(w, http.StatusNotImplemented, "WebAuthn login not yet implemented")
+	cookie, err := r.Cookie("wa_session")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, "missing WebAuthn session")
+		return
+	}
+
+	user, sessionToken, err := h.svc.FinishLogin(r.Context(), cookie.Value, r)
+	if err != nil {
+		respondError(w, http.StatusUnauthorized, "login failed: "+err.Error())
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session",
+		Value:    sessionToken,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   30 * 24 * 60 * 60,
+	})
+	http.SetCookie(w, &http.Cookie{
+		Name:   "wa_session",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	})
+
+	respondJSON(w, http.StatusOK, user)
 }
 
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {

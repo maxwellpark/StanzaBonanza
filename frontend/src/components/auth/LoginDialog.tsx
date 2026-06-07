@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { useUIStore } from '@/stores/uiStore';
+import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import type { User } from '@/types/user';
 
 type Tab = 'magic-link' | 'passkey';
 
 export function LoginDialog() {
   var { isLoginOpen, closeLogin } = useUIStore();
+  var { fetchUser } = useAuthStore();
   var [activeTab, setActiveTab] = useState<Tab>('magic-link');
   var [email, setEmail] = useState('');
   var [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,15 +41,31 @@ export function LoginDialog() {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-
     try {
       await api.post('/auth/magic-link', { email });
       setSuccessMessage('Check your email for a login link');
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handlePasskeyLogin() {
+    setError('');
+    setIsSubmitting(true);
+    try {
+      var options = await api.post<Parameters<typeof startAuthentication>[0]>('/auth/login/begin');
+      var result = await startAuthentication({ optionsJSON: options as any });
+      var user = await api.post<User>('/auth/login/finish', result);
+      var { setUser } = useAuthStore.getState();
+      setUser(user);
+      handleClose();
+    } catch (err) {
+      if (err instanceof Error && err.name === 'NotAllowedError') {
+        setError('Passkey authentication was cancelled.');
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(err instanceof Error ? err.message : 'Passkey sign-in failed. Try magic link instead.');
       }
     } finally {
       setIsSubmitting(false);
@@ -119,9 +139,7 @@ export function LoginDialog() {
                       onChange={(e) => setEmail(e.target.value)}
                       className="rounded-lg border border-parchment-dark bg-white px-4 py-2 font-sans text-sm text-ink outline-none transition-colors focus:border-accent"
                     />
-                    {error && (
-                      <p className="text-sm text-error">{error}</p>
-                    )}
+                    {error && <p className="text-sm text-error">{error}</p>}
                     <button
                       type="submit"
                       disabled={isSubmitting}
@@ -136,24 +154,20 @@ export function LoginDialog() {
 
             {activeTab === 'passkey' && (
               <div className="flex flex-col gap-3">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  disabled
-                  className="rounded-lg border border-parchment-dark bg-white px-4 py-2 font-sans text-sm text-ink outline-none opacity-50"
-                />
-                <div className="relative">
-                  <button
-                    disabled
-                    className="btn-primary w-full disabled:opacity-50"
-                    title="Coming soon"
-                  >
-                    Sign in with Passkey
-                  </button>
-                  <span className="mt-1 block text-center font-sans text-xs text-feather">
-                    Coming soon
-                  </span>
-                </div>
+                <p className="font-sans text-sm text-feather">
+                  Sign in instantly using a passkey saved on this device.
+                </p>
+                {error && <p className="text-sm text-error">{error}</p>}
+                <button
+                  onClick={handlePasskeyLogin}
+                  disabled={isSubmitting}
+                  className="btn-primary disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Waiting for passkey...' : 'Sign in with Passkey'}
+                </button>
+                <p className="text-center font-sans text-xs text-feather">
+                  No passkey yet? Sign in with magic link first, then register one from your profile.
+                </p>
               </div>
             )}
           </motion.div>

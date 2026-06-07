@@ -62,6 +62,7 @@ func (s *Server) setupRoutes() {
 	userRepo := repository.NewUserRepository(s.db)
 	sessionRepo := repository.NewSessionRepository(s.db)
 	magicLinkRepo := repository.NewMagicLinkRepository(s.db)
+	webAuthnRepo := repository.NewWebAuthnRepository(s.db)
 	poemRepo := repository.NewPoemRepository(s.db)
 	stanzaRepo := repository.NewStanzaRepository(s.db)
 	likeRepo := repository.NewLikeRepository(s.db)
@@ -69,13 +70,17 @@ func (s *Server) setupRoutes() {
 	followRepo := repository.NewFollowRepository(s.db)
 	notifRepo := repository.NewNotificationRepository(s.db)
 
-	authSvc := service.NewAuthService(userRepo, sessionRepo, magicLinkRepo, s.cfg)
+	tutorialRepo := repository.NewTutorialRepository(s.db)
+
+	authSvc := service.NewAuthService(userRepo, sessionRepo, magicLinkRepo, webAuthnRepo, s.cfg)
 	poemSvc := service.NewPoemService(poemRepo, stanzaRepo, notifRepo)
 	socialSvc := service.NewSocialService(likeRepo, commentRepo, followRepo, notifRepo, poemRepo)
+	tutorialSvc := service.NewTutorialService(tutorialRepo)
 
 	authHandler := handler.NewAuthHandler(authSvc)
 	poemHandler := handler.NewPoemHandler(poemSvc)
 	socialHandler := handler.NewSocialHandler(socialSvc)
+	tutorialHandler := handler.NewTutorialHandler(tutorialSvc)
 
 	authMiddleware := middleware.Auth(authSvc)
 	optionalAuth := middleware.OptionalAuth(authSvc)
@@ -87,8 +92,8 @@ func (s *Server) setupRoutes() {
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/magic-link", authHandler.RequestMagicLink)
 			r.Get("/magic-link/verify", authHandler.VerifyMagicLink)
-			r.Post("/register/begin", authHandler.BeginRegistration)
-			r.Post("/register/finish", authHandler.FinishRegistration)
+			r.With(authMiddleware).Post("/register/begin", authHandler.BeginRegistration)
+			r.With(authMiddleware).Post("/register/finish", authHandler.FinishRegistration)
 			r.Post("/login/begin", authHandler.BeginLogin)
 			r.Post("/login/finish", authHandler.FinishLogin)
 			r.With(authMiddleware).Post("/logout", authHandler.Logout)
@@ -137,6 +142,10 @@ func (s *Server) setupRoutes() {
 
 		// Comments
 		r.With(authMiddleware).Delete("/comments/{commentID}", socialHandler.DeleteComment)
+
+		// Tutorials
+		r.Get("/tutorials", tutorialHandler.List)
+		r.Get("/tutorials/{slug}", tutorialHandler.Get)
 	})
 }
 

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://stanza-bonanza-api.fly.dev/api/:path*"
+    }
+  ]
+}

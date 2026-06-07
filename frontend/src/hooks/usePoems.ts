@@ -73,3 +73,14 @@ export function useUserPoems(userId: string, params?: PaginationParams) {
     enabled: !!userId,
   });
 }
+
+export function useReviewStanza(poemId: string) {
+  var queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ stanzaId, approved }: { stanzaId: string; approved: boolean }) =>
+      api.put(`/poems/${poemId}/stanzas/${stanzaId}`, { approved }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['poem', poemId] });
+    },
+  });
+}

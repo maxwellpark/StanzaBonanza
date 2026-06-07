@@ -9,6 +9,7 @@ import { StanzaBlock } from './StanzaBlock';
 import { ExtendPoemDialog } from './ExtendPoemDialog';
 import { LikeButton } from '@/components/social/LikeButton';
 import { CommentThread } from '@/components/social/CommentThread';
+import { StanzaReviewPanel } from './StanzaReviewPanel';
 
 interface PoemDetailProps {
   poem: Poem;
@@ -16,10 +17,13 @@ interface PoemDetailProps {
 
 export function PoemDetail({ poem }: PoemDetailProps) {
   var [extendOpen, setExtendOpen] = useState(false);
-  var { isAuthenticated } = useAuthStore();
+  var { isAuthenticated, user } = useAuthStore();
   var { openLogin } = useUIStore();
 
   var stanzas = poem.stanzas ?? [];
+  var pendingStanzas = stanzas.filter((s) => s.status === 'pending');
+  var approvedStanzas = stanzas.filter((s) => s.status !== 'pending');
+  var isAuthor = isAuthenticated && user?.id === poem.authorId;
   var canExtend =
     poem.approvalMode !== 'closed' &&
     (!poem.maxStanzas || stanzas.length < poem.maxStanzas);
@@ -64,12 +68,16 @@ export function PoemDetail({ poem }: PoemDetailProps) {
         )}
       </header>
 
+      {isAuthor && (
+        <StanzaReviewPanel poemId={poem.id} pendingStanzas={pendingStanzas} />
+      )}
+
       <div className="card mb-8">
-        {stanzas.map((stanza, i) => (
-          <StanzaBlock key={stanza.id} stanza={stanza} isLast={i === stanzas.length - 1} />
+        {approvedStanzas.map((stanza, i) => (
+          <StanzaBlock key={stanza.id} stanza={stanza} isLast={i === approvedStanzas.length - 1} />
         ))}
 
-        {stanzas.length === 0 && (
+        {approvedStanzas.length === 0 && (
           <p className="py-8 text-center font-sans text-sm text-feather">
             This poem has no stanzas yet. Be the first to contribute!
           </p>

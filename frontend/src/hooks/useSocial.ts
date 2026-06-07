@@ -53,6 +53,33 @@ export function useFollowers(userId: string, params?: PaginationParams) {
   });
 }
 
+export function useFollowing(userId: string, params?: PaginationParams) {
+  return useQuery({
+    queryKey: ['following', userId, params],
+    queryFn: () => api.get<PaginatedResponse<User>>(`/users/${userId}/following?page=${params?.page ?? 1}`),
+    enabled: !!userId,
+  });
+}
+
+export function useUserProfile(userId: string) {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => api.get<User>(`/users/${userId}`),
+    enabled: !!userId,
+  });
+}
+
+export function useUpdateProfile() {
+  var queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { displayName: string; bio: string; avatarUrl: string }) =>
+      api.put('/users/me', input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+  });
+}
+
 export function useNotifications(params?: PaginationParams) {
   return useQuery({
     queryKey: ['notifications', params],
