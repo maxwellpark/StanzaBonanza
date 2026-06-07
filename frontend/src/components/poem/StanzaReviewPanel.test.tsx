@@ -125,7 +125,7 @@ describe('StanzaReviewPanel', () => {
     vi.mocked(useReviewStanza).mockReturnValue({
       mutate: mockMutate,
       isPending: true,
-    } as ReturnType<typeof useReviewStanza>);
+    } as unknown as ReturnType<typeof useReviewStanza>);
 
     render(<StanzaReviewPanel poemId="poem-1" pendingStanzas={[pendingStanzas[0]]} />);
 
