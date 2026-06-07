@@ -13,7 +13,7 @@
     "@simplewebauthn/browser": "^13.3.0",
     "@tanstack/react-query": "^5.95.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.40.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
