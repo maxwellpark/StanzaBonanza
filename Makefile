@@ -12,13 +12,13 @@ dev-backend:
 	cd backend && air
 
 dev-frontend:
-	cd frontend && npm run dev
+	cd frontend && pnpm dev
 
 build-backend:
 	cd backend && go build -o server ./cmd/server
 
 build-frontend:
-	cd frontend && npm run build
+	cd frontend && pnpm build
 
 test: test-backend test-frontend
 
@@ -26,7 +26,7 @@ test-backend:
 	cd backend && go test ./...
 
 test-frontend:
-	cd frontend && npm run test
+	cd frontend && pnpm test
 
 migrate:
 	cd backend && migrate -path migrations -database "$${DATABASE_URL}" up
@@ -41,4 +41,4 @@ lint-backend:
 	cd backend && go vet ./... && staticcheck ./...
 
 lint-frontend:
-	cd frontend && npm run lint
+	cd frontend && pnpm lint
