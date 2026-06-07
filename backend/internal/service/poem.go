@@ -9,10 +9,34 @@ import (
 	"github.com/maxwellpark/stanzabonanza/backend/internal/repository"
 )
 
+type poemStore interface {
+	Create(ctx context.Context, poem *domain.Poem) error
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Poem, error)
+	List(ctx context.Context, page domain.PaginationParams, format string, sort string) ([]domain.Poem, int, error)
+	ListByUser(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Poem, int, error)
+	ListFeed(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Poem, int, error)
+	ListExplore(ctx context.Context, page domain.PaginationParams) ([]domain.Poem, int, error)
+	ListHallOfFame(ctx context.Context, page domain.PaginationParams) ([]domain.Poem, int, error)
+	Update(ctx context.Context, poem *domain.Poem) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	IncrementCounter(ctx context.Context, id uuid.UUID, column string, delta int) error
+}
+
+type stanzaStore interface {
+	Create(ctx context.Context, stanza *domain.Stanza) error
+	ListByPoem(ctx context.Context, poemID uuid.UUID) ([]domain.Stanza, error)
+	UpdateStatus(ctx context.Context, id uuid.UUID, status domain.StanzaStatus) error
+	GetNextPosition(ctx context.Context, poemID uuid.UUID) (int, error)
+}
+
+type poemNotifStore interface {
+	Create(ctx context.Context, notif *domain.Notification) error
+}
+
 type PoemService struct {
-	poems   *repository.PoemRepository
-	stanzas *repository.StanzaRepository
-	notifs  *repository.NotificationRepository
+	poems   poemStore
+	stanzas stanzaStore
+	notifs  poemNotifStore
 }
 
 func NewPoemService(poems *repository.PoemRepository, stanzas *repository.StanzaRepository, notifs *repository.NotificationRepository) *PoemService {

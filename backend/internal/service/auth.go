@@ -37,15 +37,41 @@ type waSession struct {
 	expiresAt time.Time
 }
 
+type userStore interface {
+	Create(ctx context.Context, user *domain.User) error
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	GetByEmail(ctx context.Context, email string) (*domain.User, error)
+	Update(ctx context.Context, user *domain.User) error
+}
+
+type sessionStore interface {
+	Create(ctx context.Context, session *domain.Session) error
+	GetByTokenHash(ctx context.Context, tokenHash string) (*domain.Session, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+}
+
+type magicLinkStore interface {
+	Create(ctx context.Context, link *domain.MagicLink) error
+	GetByTokenHash(ctx context.Context, tokenHash string) (*domain.MagicLink, error)
+	MarkUsed(ctx context.Context, id uuid.UUID) error
+}
+
+type webAuthnStore interface {
+	GetByUserID(ctx context.Context, userID uuid.UUID) ([]domain.WebAuthnCredential, error)
+	Create(ctx context.Context, cred *domain.WebAuthnCredential) error
+	GetByCredentialID(ctx context.Context, credentialID []byte) (*domain.WebAuthnCredential, error)
+	UpdateSignCount(ctx context.Context, credentialID []byte, signCount uint32) error
+}
+
 type AuthService struct {
-	users      *repository.UserRepository
-	sessions   *repository.SessionRepository
-	magicLinks *repository.MagicLinkRepository
-	webAuthns  *repository.WebAuthnRepository
+	users      userStore
+	sessions   sessionStore
+	magicLinks magicLinkStore
+	webAuthns  webAuthnStore
 	wac        *webauthn.WebAuthn
 	cfg        *config.Config
 
-	waMu      sync.Mutex
+	waMu       sync.Mutex
 	waSessions map[string]*waSession
 }
 

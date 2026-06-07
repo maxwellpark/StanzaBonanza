@@ -9,12 +9,44 @@ import (
 	"github.com/maxwellpark/stanzabonanza/backend/internal/repository"
 )
 
+type likeStore interface {
+	Create(ctx context.Context, like *domain.Like) error
+	Delete(ctx context.Context, userID, poemID uuid.UUID) error
+	Exists(ctx context.Context, userID, poemID uuid.UUID) (bool, error)
+}
+
+type commentStore interface {
+	Create(ctx context.Context, comment *domain.Comment) error
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Comment, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	ListByPoem(ctx context.Context, poemID uuid.UUID, page domain.PaginationParams) ([]domain.Comment, int, error)
+}
+
+type followStore interface {
+	Create(ctx context.Context, follow *domain.Follow) error
+	Delete(ctx context.Context, followerID, followedID uuid.UUID) error
+	Exists(ctx context.Context, followerID, followedID uuid.UUID) (bool, error)
+	ListFollowers(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.User, int, error)
+	ListFollowing(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.User, int, error)
+}
+
+type socialNotifStore interface {
+	Create(ctx context.Context, notif *domain.Notification) error
+	ListByUser(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Notification, int, error)
+	MarkRead(ctx context.Context, userID uuid.UUID, ids []uuid.UUID) error
+}
+
+type socialPoemStore interface {
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Poem, error)
+	IncrementCounter(ctx context.Context, id uuid.UUID, column string, delta int) error
+}
+
 type SocialService struct {
-	likes    *repository.LikeRepository
-	comments *repository.CommentRepository
-	follows  *repository.FollowRepository
-	notifs   *repository.NotificationRepository
-	poems    *repository.PoemRepository
+	likes    likeStore
+	comments commentStore
+	follows  followStore
+	notifs   socialNotifStore
+	poems    socialPoemStore
 }
 
 func NewSocialService(

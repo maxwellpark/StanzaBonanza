@@ -1,14 +1,21 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/maxwellpark/stanzabonanza/backend/internal/domain"
 	"github.com/maxwellpark/stanzabonanza/backend/internal/service"
 )
 
+type tutorialService interface {
+	List(ctx context.Context) ([]domain.Tutorial, error)
+	GetBySlug(ctx context.Context, slug string) (*domain.Tutorial, error)
+}
+
 type TutorialHandler struct {
-	svc *service.TutorialService
+	svc tutorialService
 }
 
 func NewTutorialHandler(svc *service.TutorialService) *TutorialHandler {

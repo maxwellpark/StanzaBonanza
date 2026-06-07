@@ -1,18 +1,33 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
+	"github.com/maxwellpark/stanzabonanza/backend/internal/domain"
 	"github.com/maxwellpark/stanzabonanza/backend/internal/middleware"
 	"github.com/maxwellpark/stanzabonanza/backend/internal/service"
 )
 
+type authService interface {
+	RequestMagicLink(ctx context.Context, email string) (string, error)
+	VerifyMagicLink(ctx context.Context, token string) (string, *domain.User, error)
+	DeleteSession(ctx context.Context, token string) error
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateProfile(ctx context.Context, userID uuid.UUID, displayName, bio, avatarURL string) error
+	BeginRegistration(ctx context.Context, userID uuid.UUID) (*protocol.CredentialCreation, string, error)
+	FinishRegistration(ctx context.Context, userID uuid.UUID, sessionKey string, r *http.Request) (*domain.WebAuthnCredential, error)
+	BeginLogin(ctx context.Context) (*protocol.CredentialAssertion, string, error)
+	FinishLogin(ctx context.Context, sessionKey string, r *http.Request) (*domain.User, string, error)
+}
+
 type AuthHandler struct {
-	svc *service.AuthService
+	svc authService
 }
 
 func NewAuthHandler(svc *service.AuthService) *AuthHandler {

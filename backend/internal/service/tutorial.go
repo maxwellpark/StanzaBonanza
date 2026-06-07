@@ -8,8 +8,13 @@ import (
 	"github.com/maxwellpark/stanzabonanza/backend/internal/repository"
 )
 
+type tutorialStore interface {
+	List(ctx context.Context) ([]domain.Tutorial, error)
+	GetBySlug(ctx context.Context, slug string) (*domain.Tutorial, error)
+}
+
 type TutorialService struct {
-	repo *repository.TutorialRepository
+	repo tutorialStore
 }
 
 func NewTutorialService(repo *repository.TutorialRepository) *TutorialService {

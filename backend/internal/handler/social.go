@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -11,8 +12,20 @@ import (
 	"github.com/maxwellpark/stanzabonanza/backend/internal/service"
 )
 
+type socialService interface {
+	ToggleLike(ctx context.Context, userID, poemID uuid.UUID) (bool, error)
+	AddComment(ctx context.Context, userID, poemID uuid.UUID, parentID *uuid.UUID, text string) (*domain.Comment, error)
+	DeleteComment(ctx context.Context, userID, commentID uuid.UUID) error
+	ListComments(ctx context.Context, poemID uuid.UUID, page domain.PaginationParams) ([]domain.Comment, int, error)
+	ToggleFollow(ctx context.Context, followerID, followedID uuid.UUID) (bool, error)
+	ListFollowers(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.User, int, error)
+	ListFollowing(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.User, int, error)
+	ListNotifications(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Notification, int, error)
+	MarkNotificationsRead(ctx context.Context, userID uuid.UUID, ids []uuid.UUID) error
+}
+
 type SocialHandler struct {
-	svc *service.SocialService
+	svc socialService
 }
 
 func NewSocialHandler(svc *service.SocialService) *SocialHandler {

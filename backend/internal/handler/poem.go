@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -11,8 +12,23 @@ import (
 	"github.com/maxwellpark/stanzabonanza/backend/internal/service"
 )
 
+type poemService interface {
+	Create(ctx context.Context, userID uuid.UUID, title, description string, format domain.PoemFormat, approvalMode domain.ApprovalMode, maxStanzas *int) (*domain.Poem, error)
+	Get(ctx context.Context, id uuid.UUID) (*domain.Poem, error)
+	List(ctx context.Context, page domain.PaginationParams, format, sort string) ([]domain.Poem, int, error)
+	ListByUser(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Poem, int, error)
+	Update(ctx context.Context, userID, poemID uuid.UUID, title, description string) error
+	Delete(ctx context.Context, userID, poemID uuid.UUID) error
+	ListStanzas(ctx context.Context, poemID uuid.UUID) ([]domain.Stanza, error)
+	SubmitStanza(ctx context.Context, userID, poemID uuid.UUID, text, literaryDevice string) (*domain.Stanza, error)
+	ReviewStanza(ctx context.Context, userID, poemID, stanzaID uuid.UUID, approved bool) error
+	Feed(ctx context.Context, userID uuid.UUID, page domain.PaginationParams) ([]domain.Poem, int, error)
+	Explore(ctx context.Context, page domain.PaginationParams) ([]domain.Poem, int, error)
+	HallOfFame(ctx context.Context, page domain.PaginationParams) ([]domain.Poem, int, error)
+}
+
 type PoemHandler struct {
-	svc *service.PoemService
+	svc poemService
 }
 
 func NewPoemHandler(svc *service.PoemService) *PoemHandler {
