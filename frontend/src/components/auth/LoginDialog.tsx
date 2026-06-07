@@ -11,7 +11,7 @@ type Tab = 'magic-link' | 'passkey';
 
 export function LoginDialog() {
   var { isLoginOpen, closeLogin } = useUIStore();
-  var { fetchUser } = useAuthStore();
+
   var [activeTab, setActiveTab] = useState<Tab>('magic-link');
   var [email, setEmail] = useState('');
   var [isSubmitting, setIsSubmitting] = useState(false);
